@@ -111,8 +111,9 @@ jobs:
           name: Build front-end
           command: |
             cd ~/project/frontend
-            npm update
-            npm audit --audit-level=critical --force
+            npm install
+            npm audit
+            npm audit fix --audit-level=critical --force
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -128,8 +129,9 @@ jobs:
           name: Back-end build
           command: |
             cd ~/project/backend
-            npm update
-            npm audit --audit-level=critical --force
+            npm install
+            npm audit
+            npm audit fix --audit-level=critical --force
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
