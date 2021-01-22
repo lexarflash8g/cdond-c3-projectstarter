@@ -45,7 +45,7 @@ jobs:
           command: |
             cd ~/project/frontend
             rm -rf node_modules/
-            sudo npm install npm@latest -g
+            sudo npm install 
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
