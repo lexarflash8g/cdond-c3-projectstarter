@@ -44,7 +44,8 @@ jobs:
           name: Build front-end
           command: |
             cd ~/project/frontend
-            npm i
+            npm install -g npm@latest
+            npm install
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -59,8 +60,8 @@ jobs:
       - run:
           name: Back-end build
           command: |
-            cd ~/project/backend
-            npm i
+            npm install -g npm@latest
+            npm install
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -73,10 +74,11 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: Build front-end
+          name: Front-end test
           command: |
             cd ~/project/frontend
-            npm test 
+            npm install oauth-sign
+            npm run test 
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -90,10 +92,11 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Back-end build
+          name: Back-end test
           command: |
             cd ~/project/backend
-            npm test
+            npm install
+            npm run test
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
