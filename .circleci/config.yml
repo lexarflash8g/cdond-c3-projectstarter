@@ -80,6 +80,7 @@ jobs:
           name: Front-end test
           command: |
             cd ~/project/frontend
+            npm install
             npm install oauth-sign
             npm run test 
     
