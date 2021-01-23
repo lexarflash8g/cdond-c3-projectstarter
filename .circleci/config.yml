@@ -146,7 +146,7 @@ jobs:
             aws cloudformation deploy \
             --template-file .circleci/files/backend.yml \
             --tags project=udaPeople \
-            --stack-name "back-"{CIRCLE_WORKFLOW_ID}" \
+            --stack-name "back-${CIRCLE_WORKFLOW_ID}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  
             URLs=$(aws ec2-describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
             echo "URLS=$URLS"
@@ -156,9 +156,9 @@ jobs:
           name: Ensure frontned-end infrastructure exists
           command: |
             aws cloudformation deploy \
-            --template-file .circleci/files/fronted.yml \
+            --template-file .circleci/files/frontend.yml \
             --tags project=udaPeople \
-            --stack-name "front-"{CIRCLE_WORKFLOW_ID}" \
+            --stack-name "front-${CIRCLE_WORKFLOW_ID}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  
             ARN=$(aws s3 ls | grep udapeople)
             echo "ARN=$ARN"
