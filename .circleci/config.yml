@@ -181,7 +181,7 @@ jobs:
           name: Setup inventory file
           command: |
             cd .circleci/ansible
-            URLS=$(curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request GET "$ARN" https://api.memstash.io/values/arn_${CIRCLE_WORKFLOW_ID})
+            URLS=$(curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request GET  https://api.memstash.io/values/arn_${CIRCLE_WORKFLOW_ID})
             echo "$URLS" >> inventory.txt
             cat inventory.txt
       - run:
