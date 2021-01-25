@@ -160,9 +160,9 @@ jobs:
             --tags project=udaPeople \
             --stack-name "front-${CIRCLE_WORKFLOW_ID}" \
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"  
-            ARN=$(aws s3 ls | grep udapeople)
-            echo "ARN=$ARN"
-            curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request PUT --data "$ARN" https://api.memstash.io/values/arn_${CIRCLE_WORKFLOW_ID}
+           # ARN=$(aws s3 ls | grep udapeople)
+           # echo "ARN=$ARN"
+           # curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request PUT --data "$ARN" https://api.memstash.io/values/arn_${CIRCLE_WORKFLOW_ID}
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
@@ -193,7 +193,7 @@ jobs:
             echo TYPEORM_ENTITIES=./src/modules/domain/**/..*.entity.ts >> "backend/.env"
             echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> "backend/.env"
             echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
-            echo TYPEORM_PORT=5432 >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
