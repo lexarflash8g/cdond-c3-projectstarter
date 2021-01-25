@@ -164,12 +164,12 @@ jobs:
             echo "ARN=$ARN"
             curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request PUT --data "$ARN" https://api.memstash.io/values/arn_${CIRCLE_WORKFLOW_ID}
       - persist_to_workspace:
-          root: .circleci/ansible/
+          root: ~/project/.circleci/ansible/
           paths:
             - inventory
       - run: pwd
-      - run: echo "$URLS" >> .circle/ansible/inventory
-      - run: cat .circlei/ansible/inventory
+      - run: echo "$URLS" >> ~/project/.circle/ansible/inventory
+      - run: cat ~/project/.circlei/ansible/inventory
 
 
 
