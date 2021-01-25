@@ -176,7 +176,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update tar gzip ansible nodejs npm curl jq
-            pip install aws-cli
+            pip install awscli
       - run:
           name: Setup inventory file
           command: |
