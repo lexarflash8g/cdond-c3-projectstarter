@@ -296,7 +296,7 @@ jobs:
             rm -rf dist 
             rm -rf test
             rm README.md 
-            cd ../.circlecli/ansible
+            cd ../.circleci/ansible
             ansible-playbook -i inventory.txt deploy-backend.yml    
 
 
