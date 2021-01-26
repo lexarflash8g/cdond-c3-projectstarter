@@ -21,11 +21,22 @@
   become: yes
   shell: |
     sudo apt-get install -y nodejs
+- name: "create directory"
+  file:
+    path: /home/ubuntu/backend
+    state: directory
+
 - name: "copy backend folder"
   become: true
   copy: 
-    src: /root/project/backend
-    dest: /home/ubuntu/
+    src: /root/project/artifact.tar.gz
+    dest: /home/ubuntu/backend/artifact.tar.gz
+
+- name:
+  shell: |
+    cd /home/ubuntu/backend
+    tar xvzf artifact.tar.gz -C .
+    ls -la
 - name: "install node dependencies"
   shell: |
     cd /home/ubuntu/backend

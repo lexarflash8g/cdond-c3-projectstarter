@@ -266,6 +266,7 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update npm tar gzip ansible nodejs npm curl jq
+            apk add openssh-client
             pip install awscli
       - run:
           name: setup inventory file
@@ -274,6 +275,11 @@ jobs:
             URLS=$(curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request GET  https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID})
             echo "$URLS" >> inventory.txt
             cat inventory.txt    
+      - run:
+          name: Compres backend
+          command: |
+            tar -C backen d-czvf artifact.tar.gz .
+            ls -la
       - run:
           name: Deploy backend
           command: |
