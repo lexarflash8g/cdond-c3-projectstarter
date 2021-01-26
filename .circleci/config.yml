@@ -228,15 +228,9 @@ jobs:
           name: Install dependencies
           command: |
             apk add -update npm tar gzip ansible nodejs npm curl jq
-            pip3 install awscli
+            pip install awscli
       - run:
-          name: Get backend url
-          command: |
-            # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-      - run:
-          name: Deploy frontend objects
+          name: get backend IP
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
             export API_URL=http://$BACKEND_IP:3030
