@@ -46,17 +46,25 @@
 - name: "install node dependencies"
   shell: |
     cd /home/ubuntu/backend
-    npm install
-    npm install -only=dev
+    npm install --production
 - name: "building backend service"
+  become: yes
   shell: |
-   cd /home/ubuntu/backend
-   npm run build
-   npm run prestart:prod
+    export TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}"
+    export TYPEORM_ENTITIES="{{ lookup('env', 'TYPEORM_ENTITIES') }}"
+    export TYPEORM_USERNAME="{{ lookup('env', 'TYPEORM_USERNAME') }}"
+    export TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+    export TYPEORM_DATABASE="{{ lookup('env', 'TYPEORM_DATABASE') }}"
+    cd /home/ubuntu/app
+    pm2 start main.js --name app
+
 - name: "running backend service"
-  become: true
+  become: yes
   ignore_errors: yes
   shell: |
     cd /home/ubuntu/backend
     pm2 start npm --name backend -- start   
-
+- name: "Set pm2 start as service"
+  become: yes
+  shell: |
+    env PATH=$PATH:/usr/local/bin pm2 startup -u ubuntu
