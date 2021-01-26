@@ -298,6 +298,7 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            tar -C backend -czvf artifact.tar.gz .
             npm i 
             npm run build 
             npm run prestart:prod 
@@ -306,7 +307,6 @@ jobs:
             rm -rf test
             rm README.md 
             cd .. 
-            tar -C backend -czvf artifact.tar.gz .
             cd backend
             cd ../.circleci/ansible
             export ANSIBLE_HOST_KEY_CHECKING=False
