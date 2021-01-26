@@ -265,8 +265,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add -update npm tar gzip ansible nodejs npm curl jq
-            pip3 install awscli
+            apk add --update npm tar gzip ansible nodejs npm curl jq
+            pip install awscli
       - run:
           name: setup inventory file
           command: |
