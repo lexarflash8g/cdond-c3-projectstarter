@@ -46,7 +46,8 @@
 - name: "install node dependencies"
   shell: |
     cd /home/ubuntu/backend
-    npm install --production
+    npm install 
+  
 - name: "building backend service"
   become: yes
   shell: |
@@ -55,13 +56,20 @@
     export TYPEORM_USERNAME="{{ lookup('env', 'TYPEORM_USERNAME') }}"
     export TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}"
     export TYPEORM_DATABASE="{{ lookup('env', 'TYPEORM_DATABASE') }}"
-
+- name: "run build "
+  shell: |
+    cd /home/ubuntu/backend
+    npm run build
+- name: "run migrations again"
+  shell: |
+    cd /home/ubuntu/backend
+    npm run migrations
 - name: "running backend service"
   become: yes
   ignore_errors: yes
   shell: |
     cd /home/ubuntu/backend
-    pm2 start npm --name backend -- start   
+    pm2 start npm --name backend npm -- start   
 - name: "Set pm2 start as service"
   become: yes
   shell: |
