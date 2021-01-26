@@ -278,7 +278,7 @@ jobs:
       - run:
           name: Compres backend
           command: |
-            tar -C backen d-czvf artifact.tar.gz .
+            tar -C backend -czvf artifact.tar.gz .
             ls -la
       - run:
           name: Deploy backend
