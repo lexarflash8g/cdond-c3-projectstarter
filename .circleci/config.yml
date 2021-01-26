@@ -297,13 +297,7 @@ jobs:
             rm -rf test
             rm README.md 
             cd ../.circlecli/ansible
-            ansible-playbook -i inventory.txt deploy-backend.yml
-
-            
-      - run: 
-          name: Deploy frontend objects
- # Here's where you will add some code to rollback on failure         
-     # Here's where you will add some code to rollback on failure      
+            ansible-playbook -i inventory.txt deploy-backend.yml    
 
 
 workflows:
