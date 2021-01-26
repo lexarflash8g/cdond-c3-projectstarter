@@ -276,11 +276,6 @@ jobs:
             echo "$URLS" >> inventory.txt
             cat inventory.txt    
       - run:
-          name: Compres backend
-          command: |
-            tar -C backend -czvf artifact.tar.gz .
-            ls -la
-      - run:
           name: Deploy backend
           command: |
             cd backend
@@ -302,7 +297,9 @@ jobs:
             rm -rf dist 
             rm -rf test
             rm README.md 
+            tar -C backend -czvf artifact.tar.gz .
             cd ../.circleci/ansible
+            export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt deploy-backend.yml    
 
 
