@@ -31,7 +31,13 @@
   copy: 
     src: /root/project/artifact.tar.gz
     dest: /home/ubuntu/backend/artifact.tar.gz
-
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
 - name:
   shell: |
     cd /home/ubuntu/backend
@@ -49,6 +55,7 @@
    npm run prestart:prod
 - name: "running backend service"
   become: true
+  ignore_errors: yes
   shell: |
     cd /home/ubuntu/backend
     pm2 start npm --name backend -- start   
