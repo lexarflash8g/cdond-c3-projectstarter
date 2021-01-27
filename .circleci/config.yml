@@ -69,9 +69,9 @@ jobs:
           name: Copy backend for future use
           command: |
             mkdir /tmp/workspace
-            cp ~/project/package.json /tmp/workspace
-            cd ~/project/dist
-            tar -zcvf /tmp/workspace/backend.tar.gz ./
+            cp ~/project/backend/package.json /tmp/workspace
+           # cd ~/project/dist
+            #tar -zcvf /tmp/workspace/backend.tar.gz ./
       - persist_to_workspace: 
           root: /tmp/workspace
           paths:
