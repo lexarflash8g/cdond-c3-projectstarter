@@ -288,17 +288,16 @@ jobs:
           command: |
             cd backend
             touch .env
-            echo ENVIRONMENT=production > ".env"
+            echo ENVIRONMENT=production >> ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
             echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ".env"
-            echo TYPEORM_ENTITIES=./src/modules/domain/**/..*.entity{.ts,.js}>> ".env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity{.ts,.js}>> ".env"
             echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> ".env"
             echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
             echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME ".env"
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-            tar -C backend -czvf artifact.tar.gz .
             npm i 
             npm run build 
             npm run prestart:prod 
@@ -307,6 +306,7 @@ jobs:
             rm -rf test
             rm README.md 
             cd .. 
+            tar -C backend -czvf artifact.tar.gz .
             cd backend
             cd ../.circleci/ansible
             export ANSIBLE_HOST_KEY_CHECKING=False
