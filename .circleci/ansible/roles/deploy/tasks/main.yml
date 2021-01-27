@@ -31,6 +31,12 @@
   copy: 
     src: /root/project/artifact.tar.gz
     dest: /home/ubuntu/backend/artifact.tar.gz
+- name: "Copy package.json to server"
+  become: yes
+  copy:
+    src: /tmp/workspace/package.json
+    dest: /home/ubuntu/backend/
+    owner: ubuntu
 - name: "install pm2"
   become: true
   npm:

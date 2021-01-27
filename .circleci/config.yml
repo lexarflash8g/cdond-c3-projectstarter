@@ -65,6 +65,18 @@ jobs:
             rm -rf node_modules/
             npm i
             npm run build
+      - run:
+          name: Copy backend for future use
+          command: |
+            mkdir /tmp/workspace
+            cp ~/project/package.json /tmp/workspace
+            cd ~/project/dist
+            tar -zcvf /tmp/workspace/backend.tar.gz ./
+      - persist_to_workspace: 
+          root: /tmp/workspace
+          paths:
+            - package.json
+            - backend.tar.gz
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -270,6 +282,8 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["36:ec:b4:fb:d9:f5:cd:bd:5b:72:97:5b:49:0b:0b:d7"]
+      - attach_workspace:
+          at: /tmp/workspace
       - run:
           name: Install dependencies
           command: |
