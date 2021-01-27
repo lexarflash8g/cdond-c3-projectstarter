@@ -66,7 +66,11 @@
   shell: |
     cd /home/ubuntu/backend
     npm run build
-    npm prestart:prod
+- name: "run migrations "
+  become: yes
+  shell: |
+    cd /home/ubuntu/backend
+    npm run migrations
 - name: "running backend service"
   become: yes
   ignore_errors: yes
