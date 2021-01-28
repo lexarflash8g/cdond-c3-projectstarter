@@ -2,35 +2,35 @@ version: 2.1
 
 commands:
   destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here   
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID. 
     steps:
       - run:
           name: Destroy environments
           when: on_fail
           command: |
-            # Your code here
-            exit 1
+            aws s3 rm "s3://udapeople-${CIRCLE_WORKFLOW_ID}" --recursive
+            aws cloudformation delete-stack --stack-name "front-${CIRCLE_WORKFLOW_ID}"
+            aws cloudformation delete-stack --stack-name "back-${CIRCLE_WORKFLOW_ID}"
+            curl"Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request PUT --data "" https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID})
 
-  revert-migrations:
+  revert-migration:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
       # Add parameter here     
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
+          when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = 1
-            if(( $SUCCESS==1 )); 
-            then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
-            fi
+              SUCCESS=$(curl -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request GET https://api.memstash.io/values/migrations_${CIRCLE_WORKFLOW_ID})
+              if (( $SUCCESS == 1));
+              then
+                cd ~/project/backend
+                npm install
+                npn run migrations:revert 
+              fi
+                
+  
             
 jobs:
   build-frontend:
@@ -324,12 +324,19 @@ jobs:
             cd backend
             cd ../.circleci/ansible
             export ANSIBLE_HOST_KEY_CHECKING=False
-            ansible-playbook -i inventory.txt deploy-backend.yml    
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      - destroy-environment
+      - revert-migration    
   smoke-test:
     docker:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - run:
+          name: install dependencies 
+          command: |
+            apk add --update curl jq 
+            pip install awscli
       - run:
           name: Smoketest backend
           command: |
@@ -387,7 +394,8 @@ jobs:
           command: |
             echo -e "$CIRCLE_WORKFLOW_ID"
             aws cloudformation deploy --stack-name "udapeople-cloudfront" --template-file .circleci/files/cloudfront.yml --parameter-overides WorkflowID="${CIRCLE_WORKFLOW_ID}"
-      
+      - destroy-environment
+      - revert-migration
 
 
 
