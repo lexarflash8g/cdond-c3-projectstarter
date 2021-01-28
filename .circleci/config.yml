@@ -331,13 +331,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependnecies
+          name: Smoketest backend
           command: |
             BACKEND_IP=$(aws ec2 describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
             echo "$(BACKEND_IP"
             curl "http://${BACKEND_IP}:3030/api/status"
       - run:
-          name: Smoket est frontend
+          name: Smoketest frontend
           command: |
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
             if curl -s ${URL} | grep "Welcome"
@@ -346,47 +346,7 @@ jobs:
             else
               return 0
             fi
-      - run:
-          name: Smoket test backend
-          command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
-            if curl -s ${URL} | grep "Welcome"
-            then
-              return 1
-            else
-              return 0
-            fi
-  smoke-test:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - run:
-          name: Install dependnecies
-          command: |
-            BACKEND_IP=$(aws ec2 describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
-            echo "$(BACKEND_IP"
-            curl "http://${BACKEND_IP}:3030/api/status"
-      - run:
-          name: Smoket est frontend
-          command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
-            if curl -s ${URL} | grep "Welcome"
-            then
-              return 1
-            else
-              return 0
-            fi
-      - run:
-          name: Smoket test backend
-          command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
-            if curl -s ${URL} | grep "Welcome"
-            then
-              return 1
-            else
-              return 0
-            fi
+  
   cleanup:
     docker:
       - image: amazon/aws-cli
