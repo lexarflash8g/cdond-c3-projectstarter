@@ -325,6 +325,112 @@ jobs:
             cd ../.circleci/ansible
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt deploy-backend.yml    
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependnecies
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
+            echo "$(BACKEND_IP"
+            curl "http://${BACKEND_IP}:3030/api/status"
+      - run:
+          name: Smoket est frontend
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
+      - run:
+          name: Smoket test backend
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
+  smoke-test:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run:
+          name: Install dependnecies
+          command: |
+            BACKEND_IP=$(aws ec2 describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
+            echo "$(BACKEND_IP"
+            curl "http://${BACKEND_IP}:3030/api/status"
+      - run:
+          name: Smoket est frontend
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
+      - run:
+          name: Smoket test backend
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website-us-east-1.amazonaws.com"
+            if curl -s ${URL} | grep "Welcome"
+            then
+              return 1
+            else
+              return 0
+            fi
+  cleanup:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: yum -y install tar gzip
+      - attach_workspace:
+          at: ~/
+      - add_ssh_keys:
+          fingerprints: ["36:ec:b4:fb:d9:f5:cd:bd:5b:72:97:5b:49:0b:0b:d7"]     
+      - run:
+          name: old stack workflow id / remove old stack and files 
+          command: |
+            aws s3 rb s3://udapeople-$(cat ~/id.txt) --force
+            aws cloudformation delete-stack --stack-name "back-$(cat ~/id.txt)"
+            aws cloudformation delete-stack --stack-name front-$(cat ~/id.txt)"
+
+  cloudfront-update:
+    docker:
+      - image: python:3.7-alpine.311
+    steps:
+      - checkout
+      - run:
+          name: install depdencies 
+          command: |
+            apk add --update nodejs npm curl jq 
+            pip install awscli 
+      - add_ssh_keys:
+          fingerprints: ["36:ec:b4:fb:d9:f5:cd:bd:5b:72:97:5b:49:0b:0b:d7"] 
+      - run:
+        name: get old workflow ID
+        command: |
+          if aws cloudformation describe-stacks --region us-west-1 --stack-name udapeople-cloudfront; then
+            aws cloudformation describe-stacks --stack-name udapeople-cloudfront query Stacks[0].Outputs[].OutputValue --output text > ~/id.txt
+          fi
+      - run:
+          name: Update the cloudfront 
+          command: |
+            echo -e "$CIRCLE_WORKFLOW_ID"
+            aws cloudformation deploy --stack-name "udapeople-cloudfront" --template-file .circleci/files/cloudfront.yml --parameter-overides WorkflowID="${CIRCLE_WORKFLOW_ID}"
+      - destroy_environment
+      - revert_migration
+
+
 
 
 workflows:
@@ -353,4 +459,12 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
           
+
+            
