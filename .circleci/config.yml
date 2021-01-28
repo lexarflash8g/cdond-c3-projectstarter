@@ -387,7 +387,6 @@ jobs:
           command: |
             echo -e "$CIRCLE_WORKFLOW_ID"
             aws cloudformation deploy --stack-name "udapeople-cloudfront" --template-file .circleci/files/cloudfront.yml --parameter-overides WorkflowID="${CIRCLE_WORKFLOW_ID}"
-      - destroy_environment
       - revert_migration
 
 
