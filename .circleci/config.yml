@@ -267,8 +267,8 @@ jobs:
             command: |
               curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request PUT --data "true" https://api.memstash.io/values/${CIRCLE_WORKFLOW_ID}
         - slack/notify:
-          event: fail
-          template: basic_fail_1
+            event: fail
+            template: basic_fail_1
   
   deploy-frontend:
     docker:
