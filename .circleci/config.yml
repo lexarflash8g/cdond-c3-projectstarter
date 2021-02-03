@@ -137,12 +137,12 @@ jobs:
       - restore_cache:
           keys: [backend-build]
       - run:
-          name: Back-end build
+          name: scan-backend
           command: |
             cd ~/project/backend
             sudo npm install
             sudo npm audit fix --audit-level=critical --force
-            sudo npm audit --audit-level=critical
+           # sudo npm audit --audit-level=critical
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
