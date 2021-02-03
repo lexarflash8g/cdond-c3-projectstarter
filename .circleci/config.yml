@@ -368,6 +368,7 @@ jobs:
       - run:
           name: old stack workflow id / remove old stack and files 
           command: |
+            cat ~/id.txt
             aws s3 rb s3://udapeople-$(cat ~/id.txt) --force
             aws cloudformation delete-stack --stack-name "back-$(cat ~/id.txt)"
             aws cloudformation delete-stack --stack-name front-$(cat ~/id.txt)"
@@ -390,6 +391,10 @@ jobs:
             if aws cloudformation describe-stacks --region us-west-1 --stack-name udapeople-cloudfront; then
               aws cloudformation describe-stacks --stack-name udapeople-cloudfront --query Stacks[0].Outputs[].OutputValue --output text > ~/id.txt
             fi
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - id.txt
       - run:
           name: Update the cloudfront 
           command: |
