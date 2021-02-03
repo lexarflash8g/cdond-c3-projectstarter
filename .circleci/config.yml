@@ -50,6 +50,9 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   build-backend:
     docker:
@@ -80,6 +83,9 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   test-frontend:
     docker:
@@ -94,6 +100,9 @@ jobs:
             cd ~/project/frontend
             npm install
             npm run test 
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
     
 
                 
@@ -110,6 +119,9 @@ jobs:
             cd ~/project/backend
             npm install
             npm run test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
     
             
   scan-frontend:
@@ -128,6 +140,9 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   scan-backend:
     docker:
@@ -146,6 +161,9 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   deploy-infrastructure:
     docker:
@@ -212,6 +230,9 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cd .circleci/ansible
             ansible-playbook -i inventory.txt main.yml
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
       
 
 
@@ -245,6 +266,10 @@ jobs:
             name: Send migration results to memstash
             command: |
               curl -H "Content-Type: text/plain" -H "token: 203ac193-c682-4365-8ec0-55c54971c283" --request PUT --data "true" https://api.memstash.io/values/${CIRCLE_WORKFLOW_ID}
+        - slack/notify:
+          event: fail
+          template: basic_fail_1
+  
   deploy-frontend:
     docker:
       - image: python:3.7-alpine3.11
@@ -272,6 +297,11 @@ jobs:
             npm audit fix --audit-level=critical --force
             cd dist 
             aws s3 sync . s3://udapeople-"${CIRCLE_WORKFLOW_ID}"
+      - destroy_environment
+      - revert-migration
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
       # Here's where you will add some code to rollback on failure      
                     
@@ -327,6 +357,9 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment
       - revert-migration    
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   smoke-test:
     docker:
       - image: python:3.7-alpine3.11
@@ -354,6 +387,9 @@ jobs:
             else
               return 1
             fi
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   
   cleanup:
     docker:
@@ -402,6 +438,9 @@ jobs:
             aws cloudformation deploy --stack-name "udapeople-cloudfront" --template-file .circleci/files/cloudfront.yml --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}"
       - destroy-environment
       - revert-migration
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
 
 
