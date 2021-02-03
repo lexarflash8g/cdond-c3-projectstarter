@@ -371,7 +371,7 @@ jobs:
             cat ~/id.txt
             aws s3 rb s3://udapeople-$(cat ~/id.txt) --force
             aws cloudformation delete-stack --stack-name "back-$(cat ~/id.txt)"
-            aws cloudformation delete-stack --stack-name front-$(cat ~/id.txt)"
+            aws cloudformation delete-stack --stack-name "front-$(cat ~/id.txt)"
 
   cloudfront-update:
     docker:
