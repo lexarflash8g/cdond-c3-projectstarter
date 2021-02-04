@@ -375,10 +375,9 @@ jobs:
       - run:
           name: Smoketest backend
           command: |
-            sleep 30
             BACKEND_IP=$(aws ec2 describe-instances --region us-west-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}" --output text)
             echo "${BACKEND_IP}"
-            curl "http://${BACKEND_IP}:3030/api/status"
+            curl "http://${BACKEND_IP1}:3030/api/status"
       - run:
           name: Smoketest frontend
           command: |
@@ -389,6 +388,8 @@ jobs:
             else
               return 1
             fi
+      - destroy-environment
+      - revert-migration
       - slack/notify:
           event: fail
           template: basic_fail_1
