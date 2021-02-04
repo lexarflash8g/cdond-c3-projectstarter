@@ -466,7 +466,7 @@ workflows:
           filters:
             branches:
               only: 
-                - non-prod
+                - master
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - deploy-backend:
